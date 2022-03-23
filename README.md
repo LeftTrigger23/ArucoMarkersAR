@@ -6,4 +6,4 @@ Installation requirements
 - Install pip3, version 19.2.3 or later
 - Install opencv with aruco marker -> "pip3 install opencv-contrib-python"
 - Allow Python camera usage from system preferences 
-- Run command python3 AugmentedReality.py
+- Run command -> "python3 AugmentedReality.py"
