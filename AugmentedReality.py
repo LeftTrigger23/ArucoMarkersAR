@@ -3,6 +3,22 @@ import cv2.aruco as aruco
 import numpy as np
 import os #needed to access directory containing actual marker pictures
 
+def loadAugmentedImages(path):
+    listOfImagesToAugment = os.listdir(path)
+    numberOfMarkers = len(listOfImagesToAugment)
+    print("Total number of markers detected - ", numberOfMarkers)
+
+    # create a dictionary to store key -> id, and value -> image to augment for specific key
+    markersAndImages = dict()
+    for imgPath in listOfImagesToAugment:
+        # split filename into the file name (1st element) and the extension (2nd element)
+        # we are grabbing the file name which is a aruco id number
+        key =  int(os.path.splitext(imgPath)[0])
+        imgToAugment = cv2.imread(f"{path}/{imgPath}")
+        markersAndImages[key] = imgToAugment
+    
+    return markersAndImages
+
 def augmentImageOntoAruco(boundingBox, foundMarkersIds, webcamFeed, imgToAugment, drawId = True):
     
     # 4 corner points
@@ -55,7 +71,8 @@ def findArucoMarkers(webcamFeed, markerSize = 6, totalMarkersAvailable = 250, dr
 
 def main():
     webcamCapture = cv2.VideoCapture(0)
-    imgToAugment = cv2.imread("Images/Batman.jpeg")
+    augmentedIdsAndImages = loadAugmentedImages("Images")
+
 
     while True:
         success, webcamFeed = webcamCapture.read()
@@ -69,7 +86,8 @@ def main():
 
             # looping through each boundingBox and markerId -> using zip function
             for boundingBox, markerId in zip(foundArucoMarkers[0], foundArucoMarkers[1]):
-                webcamFeed = augmentImageOntoAruco(boundingBox, markerId, webcamFeed, imgToAugment)
+                if int(markerId) in augmentedIdsAndImages.keys():
+                    webcamFeed = augmentImageOntoAruco(boundingBox, markerId, webcamFeed, augmentedIdsAndImages[int(markerId)])
 
         cv2.imshow("Webcam Feed", webcamFeed)
         cv2.waitKey(1)
