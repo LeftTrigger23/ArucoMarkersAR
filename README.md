@@ -1,3 +1,7 @@
+Background Information
+--------------------------
+This is an Augmented Reality application, developed using OpenCV with Aruco Markers which allows the user to augment Images onto the detected Aruco Markers (https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html) to generate a real time augmented projection on a moving obect
+
 Installation requirements
 --------------------------
 - Install git
