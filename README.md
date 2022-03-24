@@ -13,4 +13,4 @@ Installation requirements
 - Modify opencv camera code if configured with multiple cameras
 - Run command -> `python3 AugmentedReality.py`
 - Show aruco markers on the camera feed
-- Selected images to agument should be overlap the markers detected
+- Selected images to agument should overlap the markers detected
