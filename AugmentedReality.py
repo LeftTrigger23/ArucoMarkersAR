@@ -3,7 +3,14 @@ import cv2.aruco as aruco
 import numpy as np
 import os #needed to access directory containing actual marker pictures
 
+# Steps to use this module
+# 1) Load all the images using loadAugmentedImages function
+# 2) Find all the markers using the findArucoMarkers function
+# 3) Then, we will call augmentImageOntoAruco function to augment images onto the found markers
+
 def loadAugmentedImages(path):
+    # path argument is the folder in your local machine which contains all the pictures correspondent to its markers
+    #   For ex) for marker id 23 -> we want to augment picture of ERB
     listOfImagesToAugment = os.listdir(path)
     numberOfMarkers = len(listOfImagesToAugment)
     print("Total number of markers detected - ", numberOfMarkers)
@@ -17,10 +24,16 @@ def loadAugmentedImages(path):
         imgToAugment = cv2.imread(f"{path}/{imgPath}")
         markersAndImages[key] = imgToAugment
     
+    # function returns a dictionary with key as IDs and value as the the images to augment
     return markersAndImages
 
-def augmentImageOntoAruco(boundingBox, foundMarkersIds, webcamFeed, imgToAugment, drawId = True):
-    
+def augmentImageOntoAruco(boundingBox, foundMarkersIds, webcamFeed, imgToAugment, drawId = False):
+    # arg1 -> boundingBox (4 corner points of the box)
+    # arg2 -> markerID of the box we are using
+    # arg3 -> the feed onto where we want to augment the image
+    # arg4 -> the image to augment
+    # arg5 -> drawID is the boolean flag to display the ID number of the detected markers
+
     # 4 corner points
     topLeft = boundingBox[0][0][0], boundingBox[0][0][1]
     topRight = boundingBox[0][1][0], boundingBox[0][1][1]
@@ -47,12 +60,15 @@ def augmentImageOntoAruco(boundingBox, foundMarkersIds, webcamFeed, imgToAugment
 
     augmentImg += webcamFeed
 
+    # we will return the webcamFeed with the augmentImg overlapping on the detected markers
     return augmentImg
 
 
-
-# arg2 -> marker size is 6x6
-def findArucoMarkers(webcamFeed, markerSize = 6, totalMarkersAvailable = 250, draw = True):
+def findArucoMarkers(webcamFeed, markerSize = 6, totalMarkersAvailable = 250, draw = False):
+    # arg1 -> webcamFeed is the feed where we are trying to find the aruco markers
+    # arg2 -> the marker size, default is 6x6
+    # arg3 -> total numbers of markers that the dictionary is composed of
+    # arg4 -> a boolean flag to draw the bounding box if needed, its false by default
     # change webcamFeed to greyscale
     webcamFeedGrey = cv2.cvtColor(webcamFeed, cv2.COLOR_BGR2GRAY)
 
@@ -66,6 +82,7 @@ def findArucoMarkers(webcamFeed, markerSize = 6, totalMarkersAvailable = 250, dr
     if draw:
         aruco.drawDetectedMarkers(webcamFeed, boundingBoxes)
     
+    # we are returning the bounding boxes of markers, and the id of all the foundMarkers
     return [boundingBoxes, foundMarkersIds]
 
 
